@@ -259,8 +259,8 @@ namespace FractalSharp
 
         private void drawTree(List<List<BinaryTreeNode<Tuple<Point, Point>>>> tree)
         {
-            int size = 30;
-            int offsetX = 3;
+            int size = 50;
+            int offsetX = 40;
             int offsetY = 40;
             int x = 0;
             int y = 0;
@@ -284,14 +284,17 @@ namespace FractalSharp
                 {
                     G.DrawEllipse(blackpen, x, y, size, size);
 
-                    G.DrawString(tree[i][node].Data[0].Item1.X.ToString() + " " + tree[i][node].Data[0].Item1.Y.ToString()
+                    G.DrawString(tree[i][node].Data[0].Item1.X.ToString() + " " + tree[i][node].Data[0].Item1.Y.ToString() + " " +
+                        tree[i][node].Data[0].Item2.X.ToString() + " " + tree[i][node].Data[0].Item2.Y.ToString()
                         , drawFont, drawBrush, new Point(x, y + size/7));
 
-                    G.DrawString(tree[i][node].Data[1].Item1.X.ToString() + " " + tree[i][node].Data[1].Item1.Y.ToString()
+                    G.DrawString(tree[i][node].Data[1].Item1.X.ToString() + " " + tree[i][node].Data[1].Item1.Y.ToString() + " " + 
+                        tree[i][node].Data[1].Item2.X.ToString() + " " + tree[i][node].Data[1].Item2.Y.ToString()
                         , drawFont, drawBrush, new Point(x, y + 2*size / 7 + 3));
 
 
-                    G.DrawString(tree[i][node].Data[2].Item1.X.ToString() + " " + tree[i][node].Data[2].Item1.Y.ToString()
+                    G.DrawString(tree[i][node].Data[2].Item1.X.ToString() + " " + tree[i][node].Data[2].Item1.Y.ToString() + " " +
+                        tree[i][node].Data[2].Item2.X.ToString() + " " + tree[i][node].Data[2].Item2.Y.ToString()
                         , drawFont, drawBrush, new Point(x, y + 4*size / 7 ));
 
                     newPrevBottomPoints.Add(new Point(x + size/2, y + size));
