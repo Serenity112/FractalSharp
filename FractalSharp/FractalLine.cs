@@ -30,10 +30,8 @@ namespace FractalSharp
         {
 
         }
-        private void DrawPart(Bitmap bitmap, int lx, int ly, int layer)
+        private void DrawPart(int lx, int ly, int layer)
         {
-            Graphics g = Graphics.FromImage(bitmap);
-            
             Console.WriteLine(X + " " + Y);
             
             layer = layersNumber - layer;
@@ -57,72 +55,62 @@ namespace FractalSharp
                 Y = Y + ly;
             }
 
-
-            pictureBox1.Image = bitmap;
             pictureBox1.Refresh();
         }
-        void up(int i, Bitmap bitmap)
+        void up(int i)
         {
-            Graphics g = Graphics.FromImage(bitmap);
             if (i >= 0)
             {
-                left(i - 1, bitmap);
-                DrawPart(bitmap, 0, +ly, i);
-                up(i - 1, bitmap);
-                DrawPart(bitmap, lx, 0, i);
-                up(i - 1, bitmap);
-                DrawPart(bitmap, 0, -ly, i);
-                right(i - 1, bitmap);
+                left(i - 1);
+                DrawPart(0, +ly, i);
+                up(i - 1);
+                DrawPart(lx, 0, i);
+                up(i - 1);
+                DrawPart(0, -ly, i);
+                right(i - 1);
             }
-            pictureBox1.Image = bitmap;
             pictureBox1.Refresh();
         }
-        void down(int i, Bitmap bitmap)
+        void down(int i)
         {
-            Graphics g = Graphics.FromImage(bitmap);
             if (i >= 0)
             {
-                right(i - 1, bitmap);
-                DrawPart(bitmap, 0, -ly, i);
-                down(i - 1, bitmap);
-                DrawPart(bitmap, -lx, 0, i);
-                down(i - 1, bitmap);
-                DrawPart(bitmap, 0, ly, i);
-                left(i - 1, bitmap);
+                right(i - 1);
+                DrawPart(0, -ly, i);
+                down(i - 1);
+                DrawPart(-lx, 0, i);
+                down(i - 1);
+                DrawPart(0, ly, i);
+                left(i - 1);
             }
-            pictureBox1.Image = bitmap;
             pictureBox1.Refresh();
         }
-        void right(int i, Bitmap bitmap)
+        void right(int i)
         {
-            Graphics g = Graphics.FromImage(bitmap);
             if (i >= 0)
             {
-                down(i - 1, bitmap);
-                DrawPart(bitmap, -lx, 0, i);
-                right(i - 1, bitmap);
-                DrawPart(bitmap, 0, -ly, i);
-                right(i - 1, bitmap);
-                DrawPart(bitmap, lx, 0, i);
-                up(i - 1, bitmap);
+                down(i - 1);
+                DrawPart(-lx, 0, i);
+                right(i - 1);
+                DrawPart(0, -ly, i);
+                right(i - 1);
+                DrawPart(lx, 0, i);
+                up(i - 1);
             }
-            pictureBox1.Image = bitmap;
             pictureBox1.Refresh();
         }
-        void left(int i, Bitmap bitmap)
+        void left(int i)
         {
-            Graphics g = Graphics.FromImage(bitmap);
             if (i >= 0)
             {
-                up(i - 1, bitmap);
-                DrawPart(bitmap, lx, 0, i);
-                left(i - 1, bitmap);
-                DrawPart(bitmap, 0, ly, i);
-                left(i - 1, bitmap);
-                DrawPart(bitmap, -lx, 0, i);
-                down(i - 1, bitmap);
+                up(i - 1);
+                DrawPart(lx, 0, i);
+                left(i - 1);
+                DrawPart(0, ly, i);
+                left(i - 1);
+                DrawPart(-lx, 0, i);
+                down(i - 1);
             }
-            pictureBox1.Image = bitmap;
             pictureBox1.Refresh();
         }
 
@@ -332,12 +320,11 @@ namespace FractalSharp
             X = 0;
             Y = 0;
             layersNumber = Convert.ToInt32(numericUpDown1.Value);      
-            Bitmap bitmap = new Bitmap(pictureBox1.Width, pictureBox1.Height);
 
             tree = new BinaryTree<Tuple<Point, Point>>();
             tree.buildEmptyTree(layersNumber);
 
-            up(layersNumber, bitmap);
+            up(layersNumber);
 
             drawTree(tree.treeLayers);  
 
