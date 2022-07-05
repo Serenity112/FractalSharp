@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace FractalSharp
 {
@@ -22,6 +23,7 @@ namespace FractalSharp
         public int size = 0;
         public List<BinaryTreeNode<T>> children;
         public BinaryTreeNode<T> ParentNode;
+        public Color nodeColor;
     }
     public class BinaryTree<T> where T: IComparable
     {

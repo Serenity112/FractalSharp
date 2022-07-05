@@ -26,14 +26,13 @@ namespace FractalSharp
         
         BinaryTree<Tuple<Point, Point>> tree;
         Pen pen = new Pen(Color.Black);
+        List<Color> layersColors;
         private void FractalLine_Load(object sender, EventArgs e)
         {
 
         }
         private void DrawPart(int lx, int ly, int layer)
         {
-            Console.WriteLine(X + " " + Y);
-            
             layer = layersNumber - layer;
 
             if (layer == 0)
@@ -131,8 +130,9 @@ namespace FractalSharp
 
             for(int i = 0; i <= layersNumber; i++)
             {
-                Random random = new Random();
-                pen.Color = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));
+                Color newColor = layersColors[0];
+                pen.Color = newColor;
+                layersColors.Add(newColor);
                 buildFractal(createFractalTree(i), X, Y);
                 Y = Y + fracrtalSize(i) + 20;
             }
@@ -149,7 +149,9 @@ namespace FractalSharp
                     {
                         Point p1 = new Point(node.Data[i].Item1.X + x, node.Data[i].Item1.Y + y);
                         Point p2 = new Point(node.Data[i].Item2.X + x, node.Data[i].Item2.Y + y);
-                        G.DrawLine(pen, p1, p2);
+                        
+                        Pen colorPen = new Pen(node.nodeColor);
+                        G.DrawLine(colorPen, p1, p2);
                        // Console.WriteLine("X: " + X);
                     }
                     Thread.Sleep(70);
@@ -189,7 +191,6 @@ namespace FractalSharp
                 Console.WriteLine("offset = " + offset);
 
                 List<List<BinaryTreeNode<Tuple<Point, Point>>>> treeLayers = new List<List<BinaryTreeNode<Tuple<Point, Point>>>>();
-
                 int counter = 0;
                 int secondNode = firstNodeNum(treelayer)+1;
                 treeLayers.Add(new List<BinaryTreeNode<Tuple<Point, Point>>>());
@@ -202,6 +203,7 @@ namespace FractalSharp
                         new Point(origianlNode.Data[n].Item1.X, origianlNode.Data[n].Item1.Y - offset), 
                         new Point(origianlNode.Data[n].Item2.X, origianlNode.Data[n].Item2.Y - offset)));
                 }
+                newNode.nodeColor = origianlNode.nodeColor;
 
                 newNode.children = origianlNode.children;
 
@@ -231,6 +233,7 @@ namespace FractalSharp
                                     new Point(childNode.Data[n].Item2.X, childNode.Data[n].Item2.Y - offset)));
                             }
                             newChildNode.children = childNode.children;
+                            newChildNode.nodeColor = childNode.nodeColor;
 
                             treeLayers[counter].Add(newChildNode);
                             newCurrNodes.Add(newChildNode);
@@ -257,9 +260,60 @@ namespace FractalSharp
             Pen blackpen = new Pen(Color.Black);
             Font drawFont = new Font("Arial", size/4);
             SolidBrush drawBrush = new SolidBrush(Color.Black);
+            Color newColor;
+            Random random = new Random();
+
+        // Color tree nodes
+        for (int i = 0; i <= layersNumber; i++)
+            {                      
+                newColor = Color.FromArgb(random.Next(255), random.Next(255), random.Next(255));      
+                layersColors.Add(newColor);
+                
+
+                if (i == 0)
+                {
+                    foreach (List<BinaryTreeNode<Tuple<Point, Point>>> layersNumber in tree)
+                    {
+                        foreach (BinaryTreeNode<Tuple<Point, Point>> node in layersNumber)
+                        {
+                            node.nodeColor = newColor;
+                        }
+                    }
+                } else
+                {
+                    int secondNode = firstNodeNum(i) + 1;
+                    BinaryTreeNode<Tuple<Point, Point>> origianlNode = tree[i][secondNode];
+                    tree[i][secondNode].nodeColor = newColor;
+                    
 
 
-            List<Point> prevBottomPoints = new List<Point>();
+                    List<BinaryTreeNode<Tuple<Point, Point>>> currNodes = new List<BinaryTreeNode<Tuple<Point, Point>>>();
+                    currNodes.Add(origianlNode);
+
+                    while (currNodes[0].children.Count != 0)
+                    {
+                        List<BinaryTreeNode<Tuple<Point, Point>>> newCurrNodes = new List<BinaryTreeNode<Tuple<Point, Point>>>();
+                        foreach (BinaryTreeNode<Tuple<Point, Point>> node in currNodes)
+                        {
+                            foreach (BinaryTreeNode<Tuple<Point, Point>> childNode in node.children)
+                            {
+
+                                childNode.nodeColor = newColor;
+
+                                newCurrNodes.Add(childNode);
+                            }
+
+                        }
+                        currNodes = newCurrNodes;
+                    }
+
+                }
+        }
+
+
+ 
+
+        List<Point> prevBottomPoints = new List<Point>();
 
             for (int i = 0; i <= layersNumber; i++)
             {
@@ -270,7 +324,10 @@ namespace FractalSharp
 
                 for (int node = 0; node < nodesCount; node++)
                 {
-                    G.DrawEllipse(blackpen, x, y, size, size);
+                    Pen newPen = new Pen(tree[i][node].nodeColor);
+                    newPen.Width = 2;
+
+                    G.DrawEllipse(newPen, x, y, size, size);
 
                     G.DrawString(tree[i][node].Data[0].Item1.X.ToString() + " " + tree[i][node].Data[0].Item1.Y.ToString() + " " +
                         tree[i][node].Data[0].Item2.X.ToString() + " " + tree[i][node].Data[0].Item2.Y.ToString()
@@ -319,7 +376,8 @@ namespace FractalSharp
         {
             X = 0;
             Y = 0;
-            layersNumber = Convert.ToInt32(numericUpDown1.Value);      
+            layersNumber = Convert.ToInt32(numericUpDown1.Value);
+           layersColors = new List<Color>(); 
 
             tree = new BinaryTree<Tuple<Point, Point>>();
             tree.buildEmptyTree(layersNumber);
